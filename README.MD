@@ -3,6 +3,9 @@
 
 ## TOPICS WILL COVER 
 
+
+![Banner](img/topic.jpeg)
+
 ### DQL DATA QUERY LANGUAGE SELECT STATMENT
 
 ```
