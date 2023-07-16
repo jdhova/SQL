@@ -1,7 +1,7 @@
 ## BASIC SQL TOPICS
 ## DD USE AdventureWorks2019
 
-## TOPICS WILL COVER 
+### TOPICS WILL COVER 
 
 
 ![Banner](img/topic.jpeg)
