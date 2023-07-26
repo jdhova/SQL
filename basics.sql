@@ -38,7 +38,7 @@ on emp.BusinessEntityID = pay.BusinessEntityID
 
 --- WHERE CLAUSE-------------------------------------------------
 
--- to be fixed
+
 SELECT VacationHours, SickLeaveHours, JobTitle	
 FROM [HumanResources].[Employee] emp
 inner JOIN [HumanResources].[EmployeePayHistory] pay
@@ -61,6 +61,51 @@ FROM [HumanResources].[Employee] emp
 inner JOIN [HumanResources].[EmployeePayHistory] pay
 on emp.BusinessEntityID = pay.BusinessEntityID
 where emp.JobTitle LIKE 'Seni%' or  emp.JobTitle LIKE 'De%'
+
+--IN CLAUSE 
+SELECT VacationHours, SickLeaveHours, JobTitle	
+FROM [HumanResources].[Employee] emp
+inner JOIN [HumanResources].[EmployeePayHistory] pay
+on emp.BusinessEntityID = pay.BusinessEntityID
+where emp.JobTitle IN ('Senior Tool Designer', 
+						'Senior Design Engineer', 
+							'Tool Designer',
+							'Data Analyst')
+
+
+
+--------------------------------------
+
+--SUBQUERIES
+
+--FIND EMPLYEES WHO ARE MALE AND MARRIED FROM THE RESULT FROM A QUERY  IN OP IS POPULALALLY USED IN SUB QUERIES
+
+
+SELECT  VacationHours, SickLeaveHours, JobTitle	
+FROM [HumanResources].[Employee] emp
+inner JOIN [HumanResources].[EmployeePayHistory] pay
+on emp.BusinessEntityID = pay.BusinessEntityID
+
+WHERE emp.VacationHours  > any  (select VacationHours   
+							FROM [HumanResources].[Employee] 
+							where VacationHours < 30)
+
+
+
+SELECT  VacationHours, SickLeaveHours, JobTitle	
+FROM [HumanResources].[Employee] emp
+inner JOIN [HumanResources].[EmployeePayHistory] pay
+on emp.BusinessEntityID = pay.BusinessEntityID
+--WHERE emp.VacationHours < 30 and emp.SickLeaveHours  < 40
+WHERE emp.VacationHours  in  (select VacationHours  
+							FROM [HumanResources].[Employee] 
+							where VacationHours < 30)
+							and 
+		emp.SickLeaveHours in (select SickLeaveHours  
+							FROM [HumanResources].[Employee] 
+							where SickLeaveHours < 40)
+
+							
 
 
 
