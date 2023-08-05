@@ -296,3 +296,7 @@ SELECT *
 	, LEAD(sickleavesum) OVER (partition by JobTitle order by rowNum) as'diff-LEAD'
 	, LAG(sickleavesum) OVER (partition by JobTitle order by rowNum) as'diff-LAG'
 	FROM CTE3 
+
+
+
+	---- TOPICS PENDING  RECUSSION IN SQL, ADVANCED WINDOW_FUCTION NTILE ETC, STORED PROCEDURES
