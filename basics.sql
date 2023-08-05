@@ -159,7 +159,7 @@ WITH NEWCTE AS
 ----------------------------------------------------------------------
 --WINDOW FUNCTION-- THIS HELPS IN PERFOMING FUNCTIONS AND MANIPULATING ROWS
 
-
+---PARTITION BY
 SELECT JobTitle
        ,SUM(SickLeaveHours) as 'sickleavesum'
       ,SUM(SickLeaveHours)
@@ -169,5 +169,17 @@ inner JOIN [HumanResources].[EmployeePayHistory] pay
 on emp.BusinessEntityID = pay.BusinessEntityID
 GROUP BY VacationHours, SickLeaveHours, JobTitle
 ORDER BY 1
+
+
+---ROW NUMBER
+SELECT ROW_NUMBER()OVER (PARTITION BY JobTitle order by JobTitle) +100 as 'rowNum'
+         ,JobTitle
+       ,SUM(SickLeaveHours) as 'sickleavesum'
+      ,SUM(SickLeaveHours)
+         OVER(PARTITION BY JobTitle ) as 'newval'
+FROM [HumanResources].[Employee] emp
+inner JOIN [HumanResources].[EmployeePayHistory] pay
+on emp.BusinessEntityID = pay.BusinessEntityID
+GROUP BY VacationHours, SickLeaveHours, JobTitle
 
 
