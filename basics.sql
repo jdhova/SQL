@@ -157,3 +157,17 @@ WITH NEWCTE AS
 		order by newyear, Gender DESC
 
 ----------------------------------------------------------------------
+--WINDOW FUNCTION-- THIS HELPS IN PERFOMING FUNCTIONS AND MANIPULATING ROWS
+
+
+SELECT JobTitle
+       ,SUM(SickLeaveHours) as 'sickleavesum'
+      ,SUM(SickLeaveHours)
+         OVER(PARTITION BY JobTitle ORDER BY JobTitle ) as 'newval'
+FROM [HumanResources].[Employee] emp
+inner JOIN [HumanResources].[EmployeePayHistory] pay
+on emp.BusinessEntityID = pay.BusinessEntityID
+GROUP BY VacationHours, SickLeaveHours, JobTitle
+ORDER BY 1
+
+
