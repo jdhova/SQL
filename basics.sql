@@ -182,4 +182,23 @@ inner JOIN [HumanResources].[EmployeePayHistory] pay
 on emp.BusinessEntityID = pay.BusinessEntityID
 GROUP BY VacationHours, SickLeaveHours, JobTitle
 
+--- SUM OF ROW NUMBERS WITH OVER CLAUSE 
+
+WITH CTE AS (
+SELECT ROW_NUMBER()OVER (PARTITION BY JobTitle order by JobTitle)  as 'rowNum'
+         ,JobTitle
+       ,SUM(SickLeaveHours) as 'sickleavesum'
+      ,SUM(SickLeaveHours)
+         OVER(PARTITION BY JobTitle ) as 'newval'
+FROM [HumanResources].[Employee] emp
+inner JOIN [HumanResources].[EmployeePayHistory] pay
+on emp.BusinessEntityID = pay.BusinessEntityID
+GROUP BY VacationHours, SickLeaveHours, JobTitle
+)
+SELECT *
+,max(rowNum) OVER(PARTITION BY JobTitle) AS 'TotalSum'
+FROM CTE
+order by TotalSum desc
+
+
 
