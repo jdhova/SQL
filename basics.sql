@@ -201,4 +201,38 @@ FROM CTE
 order by TotalSum desc
 
 
+----RANKS()
+
+SELECT ROW_NUMBER()OVER (PARTITION BY JobTitle order by JobTitle)  as 'rowNum'
+         ,JobTitle
+       ,SUM(SickLeaveHours) as 'sickleavesum'
+      ,SUM(SickLeaveHours)
+         OVER(PARTITION BY JobTitle ) as 'newval'
+		,RANK() OVER(PARTITION BY JobTitle ORDER BY SickLeaveHours desc) AS 'sickLeavRank'
+FROM [HumanResources].[Employee] emp
+inner JOIN [HumanResources].[EmployeePayHistory] pay
+on emp.BusinessEntityID = pay.BusinessEntityID
+GROUP BY VacationHours, SickLeaveHours, JobTitle
+
+---CTE plus RANK and FILTER with WHERE CLAUSE 
+
+WITH CTE AS (
+SELECT ROW_NUMBER()OVER (PARTITION BY JobTitle order by JobTitle)  as 'rowNum'
+         ,JobTitle
+       ,SUM(SickLeaveHours) as 'sickleavesum'
+      ,SUM(SickLeaveHours)
+         OVER(PARTITION BY JobTitle ) as 'newval'
+		,RANK() OVER(PARTITION BY JobTitle ORDER BY SickLeaveHours desc) AS 'sickLeavRank'
+FROM [HumanResources].[Employee] emp
+inner JOIN [HumanResources].[EmployeePayHistory] pay
+on emp.BusinessEntityID = pay.BusinessEntityID
+GROUP BY VacationHours, SickLeaveHours, JobTitle
+)
+SELECT *
+,max(rowNum) OVER(PARTITION BY JobTitle) AS 'TotalSum'
+FROM CTE
+WHERE rowNum < 4
+order by TotalSum desc
+
+---
 
