@@ -234,7 +234,7 @@ FROM CTE
 WHERE rowNum < 4
 order by TotalSum desc
 
------ CTE and SUBQUERIES 
+----- CTE and SUBQUERIES  for RANK AND DENSE_RANK
 
 --- CTE
 WITH CTE2 AS (
@@ -244,6 +244,7 @@ SELECT ROW_NUMBER()OVER (PARTITION BY JobTitle order by JobTitle)  as 'rowNum'
       ,SUM(SickLeaveHours)
          OVER(PARTITION BY JobTitle ) as 'newval'
 		,RANK() OVER(PARTITION BY JobTitle ORDER BY SickLeaveHours desc) AS 'sickLeavRank'
+		--	,DENSE_RANK() OVER(PARTITION BY JobTitle ORDER BY SickLeaveHours desc) AS 'DENSE_RANK_SickLeave'
 FROM [HumanResources].[Employee] emp
 inner JOIN [HumanResources].[EmployeePayHistory] pay
 on emp.BusinessEntityID = pay.BusinessEntityID
@@ -262,6 +263,7 @@ SELECT ROW_NUMBER()OVER (PARTITION BY JobTitle order by JobTitle)  as 'rowNum'
       ,SUM(SickLeaveHours)
          OVER(PARTITION BY JobTitle ) as 'newval'
 		,RANK() OVER(PARTITION BY JobTitle ORDER BY SickLeaveHours desc) AS 'sickLeavRank'
+	--	,DENSE_RANK() OVER(PARTITION BY JobTitle ORDER BY SickLeaveHours desc) AS 'DENSE_RANK_SickLeave'
 FROM [HumanResources].[Employee] emp
 inner JOIN [HumanResources].[EmployeePayHistory] pay
 on emp.BusinessEntityID = pay.BusinessEntityID
@@ -269,3 +271,28 @@ GROUP BY VacationHours, SickLeaveHours, JobTitle
 ) x
 WHERE x.sickLeavRank < 4
 
+
+--- LEAD AND LAG
+
+ 
+WITH CTE3 AS 
+
+(
+SELECT ROW_NUMBER()OVER (PARTITION BY JobTitle order by JobTitle)  as 'rowNum'
+         ,JobTitle
+       ,SUM(SickLeaveHours) as 'sickleavesum'
+      ,SUM(SickLeaveHours)
+         OVER(PARTITION BY JobTitle ) as 'newval'
+		--,RANK() OVER(PARTITION BY JobTitle ORDER BY SickLeaveHours desc) AS 'sickLeavRank'
+		--,DENSE_RANK() OVER(PARTITION BY JobTitle ORDER BY SickLeaveHours desc) AS 'DENSE_RANK_SickLeave'
+		
+FROM [HumanResources].[Employee] emp
+inner JOIN [HumanResources].[EmployeePayHistory] pay
+on emp.BusinessEntityID = pay.BusinessEntityID
+GROUP BY VacationHours, SickLeaveHours, JobTitle 
+)
+
+SELECT *
+	, LEAD(sickleavesum) OVER (partition by JobTitle order by rowNum) as'diff-LEAD'
+	, LAG(sickleavesum) OVER (partition by JobTitle order by rowNum) as'diff-LAG'
+	FROM CTE3 
