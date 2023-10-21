@@ -28,9 +28,8 @@
  ### USING WHERE CLAUSE
 
 2. Usung SARGALE "Search ARGuement ABLE"queries, Its best to use Indexes in the here clause this way Where clause is optimized.
-
-WHERE order_date > '2023-01-01' SARGALE
-WHERE YEAR(order_date) >= 2023   NON-SARGALE
+##### 2a. WHERE order_date > '2023-01-01' SARGALE 
+##### 2b WHERE YEAR(order_date) >= 2023   NON-SARGALE
 
 The 1st runs fastw because the Where filter works with the Index but the second query the WHERE clause works with the Function YEAR() this way the function needs to run for every filter.
 
